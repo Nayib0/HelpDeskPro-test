@@ -10,7 +10,7 @@ export async function POST(req: Request) {
 
     if (!email || !password) {
       return NextResponse.json(
-        { error: "Email y password son requeridos" },
+        { error: "Email and password are required" },
         { status: 400 }
       );
     }
@@ -19,7 +19,7 @@ export async function POST(req: Request) {
 
     if (!user) {
       return NextResponse.json(
-        { error: "Usuario no encontrado" },
+        { error: "User not found" },
         { status: 404 }
       );
     }
@@ -28,13 +28,13 @@ export async function POST(req: Request) {
 
     if (!isValid) {
       return NextResponse.json(
-        { error: "Contraseña incorrecta" },
+        { error: "Incorrect password" },
         { status: 401 }
       );
     }
 
     return NextResponse.json({
-      message: "Login exitoso",
+      message: "Successful login",
       user: {
         id: user._id,
         name: user.name,
@@ -42,9 +42,9 @@ export async function POST(req: Request) {
       },
     });
   } catch (error) {
-    console.error("ERROR LOGIN:", error);
+    console.error("LOGIN ERROR:", error);
     return NextResponse.json(
-      { error: "Error en el servidor" },
+      { error: "Server error" },
       { status: 500 }
     );
   }

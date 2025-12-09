@@ -22,7 +22,7 @@ export default function LoginPage() {
       if (res.data.user.role === "client") router.push("/client");
       else router.push("/agent");
     } catch (err: any) {
-      setError(err?.response?.data?.error || "Error desconocido");
+      setError(err?.response?.data?.error || "Unknown error");
     }
   };
 

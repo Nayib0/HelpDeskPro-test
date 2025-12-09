@@ -8,7 +8,7 @@ export async function GET() {
     const tickets = await TicketSchema.find().populate("createdBy assignedTo");
     return NextResponse.json(tickets);
   } catch {
-    return NextResponse.json({ error: "Error obteniendo tickets" }, { status: 500 });
+    return NextResponse.json({ error: "Error fetching tickets" }, { status: 500 });
   }
 }
 
@@ -22,7 +22,7 @@ export async function POST(req: Request) {
 
     if (!title || !description || !createdBy) {
       return NextResponse.json(
-        { error: "Faltan campos obligatorios" },
+        { error: "Missing required fields" },
         { status: 400 }
       );
     }
