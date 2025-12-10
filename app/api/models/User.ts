@@ -4,6 +4,11 @@ const UserSchema = new Schema({
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
-});
+  role: {
+    type: String,
+    enum: ["client", "agent"],
+    required: true,
+  },
+}, { timestamps: true });
 
 export const Users = models.Users || model("Users", UserSchema);

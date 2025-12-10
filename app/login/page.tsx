@@ -1,33 +1,35 @@
 "use client";
 
 import { useState } from "react";
-import { useAuth } from "@/context/AuthContext";
-import { useRouter } from "next/navigation";
 import axios from "axios";
+import { useRouter } from "next/navigation";
+import { useAuthStore } from "@/store/store";
 
 export default function LoginPage() {
-  const { login } = useAuth();
   const router = useRouter();
+  const setUser = useAuthStore((state) => state.setUser);
 
   const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
 
   const handleLogin = async () => {
     try {
-      setError("");
       const res = await axios.post("/api/auth/login", form);
 
-      login(res.data.user);
+      setUser(res.data.user);
+
+      document.cookie = "user_logged=true; path=/";
 
       if (res.data.user.role === "client") router.push("/client");
       else router.push("/agent");
+
     } catch (err: any) {
-      setError(err?.response?.data?.error || "Unknown error");
+      setError(err?.response?.data?.error || "Error inesperado");
     }
   };
 
   return (
-    <div className="flex flex-col max-w-sm mx-auto mt-16 gap-4">
+    <div className="flex flex-col max-w-sm mx-auto mt-14 gap-4">
       <h1 className="text-xl font-bold">Login</h1>
 
       <input
