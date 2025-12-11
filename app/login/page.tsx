@@ -12,21 +12,22 @@ export default function LoginPage() {
   const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
 
-  const handleLogin = async () => {
-    try {
-      const res = await axios.post("/api/auth/login", form);
+ const handleLogin = async () => {
+  try {
+    setError("");
 
-      setUser(res.data.user);
+    const res = await axios.post("/api/auth/login", form);
 
-      document.cookie = "user_logged=true; path=/";
+    const role = res.data.user.role;
 
-      if (res.data.user.role === "client") router.push("/client");
-      else router.push("/agent");
+    if (role === "client") router.push("/client");
+    else router.push("/agent");
 
-    } catch (err: any) {
-      setError(err?.response?.data?.error || "Error inesperado");
-    }
-  };
+  } catch (err: any) {
+    setError(err?.response?.data?.error || "Unknown error");
+  }
+};
+
 
   return (
     <div className="flex flex-col max-w-sm mx-auto mt-14 gap-4">

@@ -1,18 +1,32 @@
-import { NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 
-export function middleware(request: Request) {
-  const cookies = request.headers.get("cookie") || "";
-  const url = new URL(request.url);
+export function middleware(req: NextRequest) {
+  const token = req.cookies.get("token")?.value;
+  const url = req.nextUrl.pathname;
 
-  const isLogged = cookies.includes("user_logged=true");
-
-  if (!isLogged && !url.pathname.startsWith("/login")) {
-    return NextResponse.redirect(new URL("/login", request.url));
+  if (!token && (url.startsWith("/agent") || url.startsWith("/client"))) {
+    return NextResponse.redirect(new URL("/login", req.url));
   }
 
-  return NextResponse.next();
+  if (!token) return NextResponse.next();
+
+  try {
+    const payload = JSON.parse(atob(token.split(".")[1]));
+
+    if (url.startsWith("/agent") && payload.role !== "agent") {
+      return NextResponse.redirect(new URL("/client", req.url));
+    }
+
+    if (url.startsWith("/client") && payload.role !== "client") {
+      return NextResponse.redirect(new URL("/agent", req.url));
+    }
+
+    return NextResponse.next();
+  } catch (err) {
+    return NextResponse.redirect(new URL("/login", req.url));
+  }
 }
 
 export const config = {
-  matcher: ["/client/:path*", "/agent/:path*"],
+  matcher: ["/agent/:path*", "/client/:path*"],
 };

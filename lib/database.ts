@@ -1,23 +1,20 @@
 import mongoose from "mongoose";
 
-const MONGO_URL = process.env.MONGO_URL || "";
+const MONGO_URL = process.env.MONGO_URL!;
 
-if (!MONGO_URL) {
-  throw new Error("MONGO_URL environment variable is not defined in .env");
-}
+if (!MONGO_URL) throw new Error("❌ MONGO_URL not found in .env");
 
-let isConnected = false; 
+let isConnected = false;
 
-export const connectDB = async () => {
+export async function connectDB() {
   if (isConnected) return;
 
   try {
     const db = await mongoose.connect(MONGO_URL);
-    isConnected = db.connections[0].readyState === 1;
+    isConnected = db.connection.readyState === 1;
 
-    console.log("MongoDB connected successfully");
+    console.log("MongoDB connected:", db.connection.name);
   } catch (error) {
-    console.error("Error connecting to MongoDB:", error);
-    throw error;
+    console.error("❌ DB Connection Error:", error);
   }
-};
+}

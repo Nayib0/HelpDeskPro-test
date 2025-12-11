@@ -8,7 +8,7 @@ export default function AgentTickets() {
   const [tickets, setTickets] = useState([]);
 
   useEffect(() => {
-    axios.get("/api/tickets").then((res) => setTickets(res.data));
+    axios.get("/api/tickets").then((res) => setTickets(res.data)) ;
   }, []);
 
   return (
